@@ -10,7 +10,7 @@
 # Usage:
 # $ for i in $(ls *.upper.shortHeaders.fasta); do sbatch repeatmasker_fAlb15_rm3.0_aves_hc.lib.sh $i; done
 
-lib="fAlb15_rm3.0_aves_hc.lib"
+lib="fAlb15_rm3.0_aves_hc.lib" # path to repeat library
 
 module load bioinfo-tools RepeatMasker/4.0.7
 RepeatMasker -pa 4 -a -xsmall -gccalc -dir ./ -lib ${lib} ${1}
