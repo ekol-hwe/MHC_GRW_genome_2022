@@ -3,7 +3,7 @@
 """
 Process all RepeatMasker *.tbl files in a given directory and convert them into one table,
 combining all files
-python3 parse_repeatmasker_tbl.py path_to_directory path_to_output_file
+$ python3 parse_repeatmasker_tbl.py path_to_directory path_to_output_file
 """
 
 import pandas as pd
