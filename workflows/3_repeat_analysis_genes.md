@@ -1,57 +1,9 @@
-# Repeat content in genes, exons, introns and intergenic regions
+# Repeat content in genes
 
 This workflow was applied to each of the analyzed species (great 
 reed warbler, hooded crow, jackdaw, zebra finch, chicken)
 
-## RepeatMasker output parsing
-
-### Convert RepeatMasker output for each species and genome region to BED format
-
-- Script: `repeatmasker_out2bed.py`
-
-```
-# Start the script with a for loop through the RepeatMasker *out files 
-# for each species and genome region on the command line, specifying
-# the *out file and the BED file
-
-$ for in $(ls *.upper.shortHeaders.fasta.out | sed 's/.out//g'); do python repeatmasker_out2bed.py ${i}.out ${i}.rm.bed; done
-```
-
-### Sort and merge overlapping features in the repeat BED file 
-
-- Collapse the column with information about element types to preserve 
-  their identity
-
-- Script: `bedtools_merge_bed.sh`
-
-```
-# Start the script with a for loop through the RepeatMasker BED files
-# for each species and genome region
-
-$ for i in $(ls *.upper.shortHeaders.fasta.rm.bed | sed 's/.bed//g'); do bash bedtools_merge_bed.sh $i; done
-```
-
-## GFF file edits
-
-- GFF files exported from Geneious (used for manual curations) 
-  only contain exon and CDS features, convert to standard GFF3 
-  format using a perl script
-
-- Script: `sort_modify_gff.sh`
-
-```
-# Start the script with a for loop through the GFF files 
-# for each species and genome region that were exported 
-# from the Geneious software
-
-$ for i in *.gff; do sbatch sort_modify_gff.sh $i; done
-```
-
-> !!! Before continuing, double check that the contig/scaffold 
-  names in the fasta, GFF and BED files match each other  
-
-
-## Repeat content in genes and exons
+## General repeat content in genes and exons
 
 ### Intersect gene annotation GFF files with repeat element BED files
 
@@ -116,6 +68,9 @@ $ for i in $(ls *.sorted.modified.intersect_repeats.exons.gff | sed 's/.gff//g')
 $ for i in $(ls *.sorted.modified.gff | sed 's/.sorted.modified.gff//g'); do bash add_genes_wo_repeats_summary.sh ${i}.sorted.modified.gff ${i}.sorted.modified.intersect_repeats.genes.gff ${i}.sorted.modified.intersect_repeats.genes.summary.bed; done
 ```
 
+- Keep the intermediate files *.sorted.modified.genes.length.bed
+  for workflow 4
+
 ### Combine all results for repeat elements in genes for downstream analysis
 
 - Concatenate all *.all_genes_summary.bed files for downstream analysis
@@ -133,8 +88,7 @@ cat *_temp.txt > CH_GRW_HC_JD_ZF.mhc_I_II.intersect_repeats.all_genes.summary.be
 rm *_temp.txt
 ```
 
-- Reformat the concatenated summary file and plot statistics 
-  such as repeat element length (cumulative) and gene length
+- Reformat the concatenated summary file
 
 - Script: `repeats_per_gene_length.py`
 
@@ -146,7 +100,7 @@ $ python3 repeats_per_gene_length.py CH_GRW_HC_JD_ZF.mhc_I_II.intersect_repeats.
 ```
 
 
-## Repeat content in introns
+## General repeat content in introns
 
 ### Create a genome file from each fasta file of genome regions for each species
 
@@ -281,7 +235,7 @@ $ for i in $(ls *.sorted.modified.intersect_ltr.gff); do bash extract_exon_genes
 $ for i in $(ls *.sorted.modified.intersect_ltr.genes.gff | sed 's/.gff//g'); bash bedtools_merge_intersection_gene_gff.sh ${i}.gff ${i}.summary.bed; done
 ```
 
-### Add genes without repeat elements to the merged GFF summary for genes
+### Add genes without LTR elements to the merged GFF summary for genes
 
 - Run for Hooded crow, jackdaw and warbler
 
@@ -327,8 +281,7 @@ cat *_ltr.temp.txt > CH_GRW_HC_JD_ZF.mhc_I_II.intersect_ltr.all_genes.summary.be
 rm *_ltr.temp.txt
 ```
 
-- Analyse the BED files created from intersections of the gene GFF file 
-  with all repeat elements and with LTR elements
+- Reformat the concatenated summary file
 
 - Script: `repeats_ltr_per_gene_length.py`
 
@@ -336,7 +289,7 @@ rm *_ltr.temp.txt
 
 ```
 # Run the script from the command line, specifying the
-# concatenated summary file
+# concatenated summary files for all repeats and LTRs
 
 $ python3 repeats_ltr_per_gene_length.py CH_GRW_HC_JD_ZF.mhc_I_II.intersect_repeats.all_genes.summary.bed CH_GRW_HC_JD_ZF.mhc_I_II.intersect_ltr.all_genes.summary.bed
 ```
