@@ -4,11 +4,8 @@
 #SBATCH -t 1-00:00:00
 #SBATCH -C usage_mail
 
-### Repeat mask MHC regions and remaining genome separately from each other, 
-# using a manually curated repeat library for birds
-
 # Usage:
-# $ for i in $(ls *.upper.shortHeaders.fasta); do sbatch repeatmasker_fAlb15_rm3.0_aves_hc.lib.sh $i; done
+# $ sbatch repeatmasker_fAlb15_rm3.0_aves_hc.lib.sh [EDITED_FASTA]
 
 lib="fAlb15_rm3.0_aves_hc.lib" # path to repeat library
 

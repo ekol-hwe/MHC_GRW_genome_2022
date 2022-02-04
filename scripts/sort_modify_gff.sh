@@ -4,7 +4,7 @@
 #SBATCH -t 00:10:00
 
 ### Usage: sort and modify GFF files produced with Geneious software
-# $ for i in *.gff; do sbatch sort_modify_gff.sh $i; done
+# $ sbatch sort_modify_gff.sh [GENEIOUS_GFF]
 
 file=`echo $1 | sed 's/.gff//g'`
 

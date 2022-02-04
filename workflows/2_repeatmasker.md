@@ -70,3 +70,50 @@ $ for i in $(ls *.upper.shortHeaders.fasta); do sbatch repeatmasker_fAlb15_rm3.0
 ```
 $ python3 parse_repeatmasker_tbl.py passerine_tbl/ passerines.txt
 ```
+
+## RepeatMasker output and GFF edits for downstream analyses
+
+### Convert RepeatMasker output for each species and genome region to BED format
+
+- Script: `repeatmasker_out2bed.py`
+
+```
+# Start the script with a for loop through the RepeatMasker *out files 
+# for each species and genome region on the command line, specifying
+# the *out file and the BED file
+
+$ for in $(ls *.upper.shortHeaders.fasta.out | sed 's/.out//g'); do python repeatmasker_out2bed.py ${i}.out ${i}.rm.bed; done
+```
+
+### Sort and merge overlapping features in the repeat BED file 
+
+- Collapse the column with information about element types to preserve 
+  their identity
+
+- Script: `bedtools_merge_bed.sh`
+
+```
+# Start the script with a for loop through the RepeatMasker BED files
+# for each species and genome region
+
+$ for i in $(ls *.upper.shortHeaders.fasta.rm.bed | sed 's/.bed//g'); do bash bedtools_merge_bed.sh $i; done
+```
+
+## GFF file edits
+
+- GFF files exported from Geneious (used for manual curations) 
+  only contain exon and CDS features, convert to standard GFF3 
+  format using a perl script
+
+- Script: `sort_modify_gff.sh`
+
+```
+# Start the script with a for loop through the GFF files 
+# for each species and genome region that were exported 
+# from the Geneious software
+
+$ for i in *.gff; do sbatch sort_modify_gff.sh $i; done
+```
+
+> !!! Before continuing, double check that the contig/scaffold 
+  names in the fasta, GFF and BED files match each other  

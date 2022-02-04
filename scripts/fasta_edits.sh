@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Usage:
-# $ for i in $(ls *fasta | sed 's/.fasta//g'); do bash fasta_edits.sh $i; done
+# $ bash fasta_edits.sh [FASTA]
 
 filename=`basename $1`
 
