@@ -88,7 +88,34 @@ cat *_temp.txt > CH_GRW_HC_JD_ZF.mhc_I_II.intersect_repeats.all_genes.summary.be
 rm *_temp.txt
 ```
 
-- Reformat the concatenated summary file
+#### Additional edits only for chicken
+
+- The chicken GFF file has a slightly different format than
+  the other GFF files used in this analysis with accession numbers
+  instead of gene names
+
+- Replace accession numbers with gene product names from the 
+  chicken GFF file
+
+```
+# Get gene accession numbers from chicken GFF file for the MHC region
+awk -F'\t' '{print $9}' ch_mhc.sorted.modified.gff | awk -F';' '{print $1}' | sed 's/Name=//g' > ch_mhc_gene_accessions.txt
+  
+# Extract product names from GFF file and create a lookup table
+grep -f ch_mhc_gene_accessions.txt ch_mhc.sorted.modified.gff | awk -F'\t' '$3 == "CDS"' | awk -F'\t' '{print $9}' | awk -F';' '{print $2 ";" $8}' | sort -u > ch_mhc_gene_accessions_products_lookup_table.txt
+```
+
+- Script: `fix_chicken_gene_names.py`
+
+```
+# Update the summary file with gene product names for chicken 
+# based on the lookup table
+
+$ python3 fix_chicken_gene_names.py ch_mhc_gene_accessions_products_lookup_table.txt CH_GRW_HC_JD_ZF.mhc_I_II.intersect_repeats.all_genes.summary.bed
+```
+
+
+### Reformat the concatenated and updated summary file
 
 - Script: `repeats_per_gene_length.py`
 
@@ -281,7 +308,25 @@ cat *_ltr.temp.txt > CH_GRW_HC_JD_ZF.mhc_I_II.intersect_ltr.all_genes.summary.be
 rm *_ltr.temp.txt
 ```
 
-- Reformat the concatenated summary file
+#### Additional edits only for chicken
+
+- The chicken GFF file has a slightly different format than
+  the other GFF files used in this analysis with accession numbers
+  instead of gene names
+
+- Replace accession numbers with gene product names from the 
+  chicken GFF file
+
+- Script: `fix_chicken_gene_names.py`
+
+```
+# Update the summary file with gene product names for chicken 
+# based on the lookup table that was created above
+
+$ python3 fix_chicken_gene_names.py ch_mhc_gene_accessions_products_lookup_table.txt CH_GRW_HC_JD_ZF.mhc_I_II.intersect_ltr.all_genes.summary.bed
+```
+
+### Reformat the concatenated and updated summary file
 
 - Script: `repeats_ltr_per_gene_length.py`
 
