@@ -6,7 +6,7 @@ This script is used to create a GFF file from a tabular blast output file for th
 
 ### Blastn short
 
-The subject for the blast search is the assembly (in this example **mhc_contigs.fasta**). The MHC exon sequences (class I, class II alpha and beta) used as query come from Sanger sequencing (in this example **GRW_MHCI_exon_1-8_UTR_clone_cN2.fasta**). here the blast version was used was blast+ 2.6.0.
+The subject for the blast search is the assembly (in this example **mhc_contigs.fasta**). The MHC exon sequences (class I, class II alpha and beta) used as query come from Sanger sequencing (in this example **GRW_MHCI_exon_1-8_UTR_clone_cN2.fasta**). Here, the blast version blast+ 2.6.0 was used.
 
 ```
 # create the blast database
